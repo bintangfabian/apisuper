@@ -16,11 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
 Route::post('register', 'App\Http\Controllers\UserController@register');
 
+
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user/detail', 'App\Http\Controllers\UserController@details');
     Route::post('logout', 'App\Http\Controllers\UserController@logout');
-    Route::resource('/murid', 'App\Http\Controllers\MuridController');
+    Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
 });
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
