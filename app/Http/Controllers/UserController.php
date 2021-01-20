@@ -26,12 +26,15 @@ class UserController extends Controller
                 $token->expires_at = Carbon::now()->addWeeks(1);
             $token->save();
             return response()->successWithKey([
+                'name' => $user->name,
+                'role' => $user->role,
+                'email' => $user->email,
                 'token' => $tokenResult->accessToken,
                 'type' => 'Bearer',
                 'expires_at' => Carbon::parse(
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
-            ], 'personal_access_token');
+            ], 'user_data');
         } 
             catch (\Throwable $th) {
                 return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
@@ -75,6 +78,12 @@ class UserController extends Controller
     public function details()
     {
         $user = Auth::user();
-        return response()->json(['success' => $user], $this->successStatus);
+        // return response()->json(['success' => $user], $this->successStatus);
+        return response()->successWithMessage([
+            'nama' => $user->name,
+            'role' => $user->role,
+            'email' => $user->email,
+            'expired_at' => $user->expired_at,
+        ]);
     }
 }
