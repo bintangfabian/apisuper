@@ -18,10 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['return.json'])->group(function () {
     Route::post('register', 'App\Http\Controllers\UserController@register');
     Route::get('images/{id}', [ImageController::class, 'show'])->name('image.show');
+    Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
 });
 
 
-Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
 Route::resource('user/edit', 'App\Http\Controllers\UserController');
 Route::resource('/news', 'App\Http\Controllers\NewsController');
 

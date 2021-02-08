@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\StatusCode;
 use Carbon\Carbon;
-use Validator;
 use Avatar;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,7 +17,7 @@ class UserController extends Controller
 {
     public $successStatus = 200;
 
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
         try {
             $credentials = request(['email', 'password']);
@@ -26,8 +26,7 @@ class UserController extends Controller
             $user = $request->user();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
-            if ($request->remember_me)
-                $token->expires_at = Carbon::now()->addWeeks(1);
+            if ($request->remember_me) $token->expires_at = Carbon::now()->addWeeks(1);
             $token->save();
             return response()->successWithKey([
                 'name' => $user->name,
@@ -35,6 +34,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'token' => $tokenResult->accessToken,
                 'type' => 'Bearer',
+                'image_id' => $user->image->id,
                 'expires_at' => Carbon::parse(
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
