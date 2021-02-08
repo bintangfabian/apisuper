@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,8 +14,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::middleware(['return.json'])->group(function () {
+    Route::post('register', 'App\Http\Controllers\UserController@register');
+    Route::get('images/{id}', [ImageController::class, 'show'])->name('image.show');
+});
+
+
 Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
-Route::post('register', 'App\Http\Controllers\UserController@register');
 Route::resource('user/edit', 'App\Http\Controllers\UserController');
 Route::resource('/news', 'App\Http\Controllers\NewsController');
 

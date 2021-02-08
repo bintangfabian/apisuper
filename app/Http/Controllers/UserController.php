@@ -4,17 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\StatusCode;
 use Carbon\Carbon;
 use Validator;
+use Avatar;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public $successStatus = 200;
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         try {
             $credentials = request(['email', 'password']);
             if (!Auth::attempt($credentials))
@@ -35,30 +39,24 @@ class UserController extends Controller
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
             ], 'user_data');
-        } 
-            catch (\Throwable $th) {
-                return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
-            }
+        } catch (\Throwable $th) {
+            return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'role' => 'required',
-                'email' => 'required|email',
-                'password' => 'required',
-                'c_password' => 'required|same:password',
-            ]);
 
-            if ($validator->fails()) {
-                return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);            
-            }
+            $user = new User($request->validated());
+            $user->save();
 
-            $input = $request->all();
-            $input['password'] = bcrypt($input['password']);
-            $user = User::create($input);
+            $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
+            Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar);
+
+            $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
+
+            // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage('Successfully created user!', StatusCode::CREATED);
         } catch (\Throwable $th) {
             return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
@@ -70,7 +68,7 @@ class UserController extends Controller
     {
         // $request->user()->token()->revoke();
         $logout = $request->user()->token()->revoke();
-        if($logout){
+        if ($logout) {
             return response()->successWithMessage('Successfully logout!');
         }
     }
