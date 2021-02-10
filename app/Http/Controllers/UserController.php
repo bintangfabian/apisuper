@@ -59,7 +59,7 @@ class UserController extends Controller
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage('Successfully created user!', StatusCode::CREATED);
         } catch (\Throwable $th) {
-            return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
+            return response()->error("$th", StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 
