@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        try {
+        // try {
             $credentials = request(['email', 'password']);
             if (!Auth::attempt($credentials))
                 return response()->error('Email or password is not correct', StatusCode::UNAUTHORIZED);
@@ -39,9 +39,9 @@ class UserController extends Controller
                     $tokenResult->token->expires_at
                 )->toDateTimeString()
             ], 'user_data');
-        } catch (\Throwable $th) {
-            return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
-        }
+        // } catch (\Throwable $th) {
+        //     return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
+        // }
     }
 
     public function register(RegisterUserRequest $request)
