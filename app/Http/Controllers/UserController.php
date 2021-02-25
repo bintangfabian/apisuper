@@ -35,7 +35,7 @@ class UserController extends Controller
             'email' => $user->email,
             'token' => $tokenResult->accessToken,
             'type' => 'Bearer',
-            // 'image_id' => $user->image->id,
+            'image_id' => $user->image->id,
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString()
@@ -47,23 +47,23 @@ class UserController extends Controller
 
     public function register(RegisterUserRequest $request)
     {
-        // try {
-        $user = new User($request->validated());
-        $user->password = bcrypt($user->password);
-        $user->save();
+        try {
+            $user = new User($request->validated());
+            $user->password = bcrypt($user->password);
+            $user->save();
 
-        $user->assignRole($request['role']);
+            $user->assignRole($request['role']);
 
-        $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
-        Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar);
+            $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
+            Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar);
 
-        $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
+            $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
 
-        // return response()->successWithMessage('hai!', StatusCode::CREATED);
-        return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
-        // } catch (\Throwable $th) {
-        //     return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
-        // }
+            // return response()->successWithMessage('hai!', StatusCode::CREATED);
+            return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
+        } catch (\Throwable $th) {
+            return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 
 
