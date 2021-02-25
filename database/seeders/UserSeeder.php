@@ -15,12 +15,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $student = User::create([
-            "name" => "Bintang Fabian",
-            "email" => "bintangalfin33@gmail.com",
-            "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("bintang"),
-        ]);
+        // $student = User::create([
+        //     "name" => "Bintang Fabian",
+        //     "email" => "bintangalfin33@gmail.com",
+        //     "email_verified_at" => now()->timezone('Asia/Jakarta'),
+        //     "password" => Hash::make("bintang"),
+        // ]);
         // $student->assignRole('student');
         // $picName = md5("tim sukses") . '.' . 'png';
         // $avatar = Avatar::create("Tim Sukses")->getImageObject()->encode('png');
