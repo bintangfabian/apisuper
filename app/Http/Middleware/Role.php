@@ -23,5 +23,21 @@ class Role
         }
 
         $user = Auth::user();
+
+        if($user->hasRole('1')) {
+            return $next($request);
+        }
+        if($user->hasRole('2')) {
+            return $next($request);
+        }
+        if($user->hasRole('3')) {
+            return $next($request);
+        }
+        if($user->hasRole('4')) {
+            return $next($request);
+        }
+        if($user->hasRole('5')) {
+            return $next($request);
+        }
     }
 }

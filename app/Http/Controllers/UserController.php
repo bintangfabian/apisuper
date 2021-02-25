@@ -27,12 +27,11 @@ class UserController extends Controller
             $user = $request->user();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
-            if ($request->remember_me) $token->expires_at = Carbon::now()->addWeeks(1);
+            if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
             $token->save();
             return response()->successWithKey([
                 'id' => $user->id,
                 'name' => $user->name,
-                'role' => $user->role,
                 'email' => $user->email,
                 'token' => $tokenResult->accessToken,
                 'type' => 'Bearer',
@@ -48,10 +47,11 @@ class UserController extends Controller
 
     public function register(RegisterUserRequest $request)
     {
-        try {
+        // try {
             $user = new User($request->validated());
-          
+            $user->password = bcrypt($user->password);
             $user->save();
+            
 
             // $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
             // Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar);
@@ -59,11 +59,25 @@ class UserController extends Controller
             // $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
 
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
+            if($request['role'] == 1) {
+                $user->assignRole('1');
+            }
+            if($request['role'] == 2) {
+                $user->assignRole('2');
+            }
+            if($request['role'] == 3) {
+                $user->assignRole('3');
+            }
+            if($request['role'] == 4) {
+                $user->assignRole('4');
+            }
+            if($request['role'] == 5) {
+                $user->assignRole('5');
+            }
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
-            // return response()->successWithMessage("$role", StatusCode::CREATED);
-        } catch (\Throwable $th) {
-            return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
-        }
+        // } catch (\Throwable $th) {
+        //     return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
+        // }
     }
 
 

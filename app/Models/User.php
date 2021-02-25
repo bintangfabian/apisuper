@@ -20,7 +20,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'role',
         'email',
         'password',
     ];
@@ -51,8 +50,8 @@ class User extends Authenticatable
         return $this->morphOne('App\Models\Image', 'imageable');
     }
 
-    public function setPasswordAttribute($password)
-    {
-        $this->attributes['password'] = bcrypt($password);
-    }
+    // public function setPasswordAttribute($password)
+    // {
+    //     $this->attributes['password'] = bcrypt($password);
+    // }
 }
