@@ -38,13 +38,11 @@ class NewsController extends Controller
     {
         try {
             $news = new News;
-            $news->news_picture = $request->news_picture;
+            // $news->news_picture = $request->news_picture;
             $news->news_title = $request->news_title;
             $news->news_fill = $request->news_fill;
             if($news->save()){
                 return response()->successWithMessage('Successfully created news!', StatusCode::CREATED);
-            }else{
-                return ["status"=>"Gagal Menyimpan data"];
             }
         } 
             catch (\Throwable $th) {
@@ -95,7 +93,7 @@ class NewsController extends Controller
     {
         try {
             $news = News::where('id_news', $id)->first();
-            $news->news_picture = $request->news_picture;
+            // $news->news_picture = $request->news_picture;
             $news->news_title = $request->news_title;
             $news->news_fill = $request->news_fill;
             if($news->save()){
