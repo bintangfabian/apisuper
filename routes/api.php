@@ -25,6 +25,8 @@ Route::middleware(['return.json'])->group(function () {
     Route::post('register', 'App\Http\Controllers\UserController@register');
     Route::get('images/{id}', [ImageController::class, 'show'])->name('image.show');
     Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
+    Route::get('email/verify/{id}', 'App\Http\Controllers\VerificationApiController@verify')->name('verificationapi.verify');
+    Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
 });
 
 
