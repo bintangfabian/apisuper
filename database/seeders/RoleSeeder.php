@@ -22,27 +22,27 @@ class RoleSeeder extends Seeder
         // ]);
 
         // kepala sekolah
-        Role::create([
-            'name' => '2',
-            'guard_name' => 'web'
-        ]);
+        // Role::create([
+        //     'name' => '2',
+        //     'guard_name' => 'web'
+        // ]);
 
-        // guru
-        Role::create([
-            'name' => '3',
-            'guard_name' => 'web'
-        ]);
+        // // guru
+        // Role::create([
+        //     'name' => '3',
+        //     'guard_name' => 'web'
+        // ]);
 
-        // murid
-        Role::create([
-            'name' => '4',
-            'guard_name' => 'web'
-        ]);
+        // // murid
+        // Role::create([
+        //     'name' => '4',
+        //     'guard_name' => 'web'
+        // ]);
 
-        // wali santri
-        Role::create([
-            'name' => '5',
-            'guard_name' => 'web'
-        ]);
+        // // wali santri
+        // Role::create([
+        //     'name' => '5',
+        //     'guard_name' => 'web'
+        // ]);
     }
 }
