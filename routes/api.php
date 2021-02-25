@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
 });
 
-Route::group(['middleware' => ['auth:api', 'role:1']], function() {
+Route::group(['middleware' => ['auth:api', 'role:3']], function() {
     Route::resource('/news', 'App\Http\Controllers\NewsController');
 });
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
