@@ -42,7 +42,7 @@ class UserController extends Controller
         ], 'user_data');
         // } catch (\Throwable $th) {
         //     return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
-        // }
+        // } 
     }
 
     public function register(RegisterUserRequest $request)
