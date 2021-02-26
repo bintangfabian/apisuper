@@ -39,8 +39,14 @@ Route::middleware(['return.json'])->group(function () {
         Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
     });
 
-    Route::group(['middleware' => ['auth:api', 'role:3']], function () {
+    // admin
+    Route::group(['middleware' => ['auth:api', 'role:1']], function () {
         Route::resource('/news', 'App\Http\Controllers\NewsController');
+    });
+
+    // murid
+    Route::group(['middleware' => ['auth:api', 'role:4']], function () {
+        Route::resource('/news', 'App\Http\Controllers\NewsController@index');
     });
 
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
