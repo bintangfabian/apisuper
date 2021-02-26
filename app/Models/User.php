@@ -54,4 +54,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
 }

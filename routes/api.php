@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\VerificationController;
@@ -59,6 +60,7 @@ Route::middleware(['return.json'])->group(function () {
     //     Route::resource('/news', 'App\Http\Controllers\NewsController');
     // });
 
+    Route::apiResource('announcement', AnnouncementController::class);
     Route::resource('news', 'App\Http\Controllers\NewsController');
 });
 

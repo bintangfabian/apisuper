@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class KelasSeeder extends Seeder
+class GradeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,34 +14,34 @@ class KelasSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('kelas')->insert([
+        DB::table('grades')->insert([
             [
-                'class_name' => 'X RPL',
+                'name' => 'X RPL',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'class_name' => 'X TKJ',
+                'name' => 'X TKJ',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'class_name' => 'XI RPL',
+                'name' => 'XI RPL',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'class_name' => 'XI TKJ',
+                'name' => 'XI TKJ',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'class_name' => 'XII RPL',
+                'name' => 'XII RPL',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'class_name' => 'XII TKJ',
+                'name' => 'XII TKJ',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

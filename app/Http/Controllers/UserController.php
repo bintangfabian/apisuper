@@ -42,7 +42,7 @@ class UserController extends Controller
         ], 'user_data');
         // } catch (\Throwable $th) {
         //     return response()->error('Failed to login!', StatusCode::INTERNAL_SERVER_ERROR);
-        // } 
+        // }
     }
 
     public function register(RegisterUserRequest $request)
@@ -59,6 +59,9 @@ class UserController extends Controller
             $user->sendEmailVerificationNotification();
 
             $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
+            if ($request['role'] == '4') {
+                $user->student()->create(['user_id' => $user->id, 'grade_id' => $request->grade_id]);
+            }
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
         } catch (\Throwable $th) {
