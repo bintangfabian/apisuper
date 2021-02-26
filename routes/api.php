@@ -27,6 +27,16 @@ Route::middleware(['return.json'])->group(function () {
     Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
     Route::get('email/verify/{id}', 'App\Http\Controllers\VerificationApiController@verify')->name('verificationapi.verify');
     Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('user/detail', 'App\Http\Controllers\UserController@details');
+        Route::post('logout', 'App\Http\Controllers\UserController@logout');
+        Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
+    });
+
+    Route::group(['middleware' => ['auth:api', 'role:3']], function () {
+        Route::resource('/news', 'App\Http\Controllers\NewsController');
+    });
 });
 
 
@@ -34,21 +44,15 @@ Route::resource('user/edit', 'App\Http\Controllers\UserController');
 // Route::resource('/news', 'App\Http\Controllers\NewsController');
 
 
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('user/detail', 'App\Http\Controllers\UserController@details');
-    Route::post('logout', 'App\Http\Controllers\UserController@logout');
-    Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
-});
-
-Route::group(['middleware' => ['auth:api', 'role:3']], function() {
-    Route::resource('/news', 'App\Http\Controllers\NewsController');
-});
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+Route::get('hai', function () {
+    return response()->json(['hai' => true]);
+});
 
 // Forgot Pass
-Route::post('/forgot-password', function(Request $request) {
+Route::post('/forgot-password', function (Request $request) {
     $request->validate(["email" => 'required|email']);
 
     $status = Password::sendResetLink(
@@ -62,7 +66,7 @@ Route::get('/reset-password/{token}', function ($token) {
     $email = $_GET['email'];
     return view('auth.reset-password', ['token' => $token, 'email' => $email]);
 })->name('password.reset');
-Route::post('/reset-password', function(Request $request) {
+Route::post('/reset-password', function (Request $request) {
     $request->validate([
         'token' => 'required',
         'email' => 'required|email',
