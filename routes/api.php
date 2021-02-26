@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
@@ -37,54 +38,19 @@ Route::middleware(['return.json'])->group(function () {
     Route::group(['middleware' => ['auth:api', 'role:3']], function () {
         Route::resource('/news', 'App\Http\Controllers\NewsController');
     });
+
+    Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
+        Route::post('request', [PasswordResetController::class, 'request']);
+        Route::get('find/{token}', [PasswordResetController::class, 'find']);
+        Route::post('reset', [PasswordResetController::class, 'reset']);
+    });
+
+    // Route::group(['middleware' => ['auth:api', 'role:1']], function () {
+    //     Route::resource('/news', 'App\Http\Controllers\NewsController');
+    // });
+
+    Route::resource('news', 'App\Http\Controllers\NewsController');
 });
 
 
 Route::resource('user/edit', 'App\Http\Controllers\UserController');
-// Route::resource('/news', 'App\Http\Controllers\NewsController');
-
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-Route::get('hai', function () {
-    return response()->json(['hai' => true]);
-});
-
-// Forgot Pass
-Route::post('/forgot-password', function (Request $request) {
-    $request->validate(["email" => 'required|email']);
-
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
-
-    return $status === Password::RESET_LINK_SENT ? response()->json(["message" => __($status)], 200) : response()->json(["error" => __($status)], 400);
-})->name('password.email');
-
-Route::get('/reset-password/{token}', function ($token) {
-    $email = $_GET['email'];
-    return view('auth.reset-password', ['token' => $token, 'email' => $email]);
-})->name('password.reset');
-Route::post('/reset-password', function (Request $request) {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
-
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) use ($request) {
-            $user->forceFill([
-                'password' => Hash::make($password)
-            ])->save();
-
-            $user->setRememberToken(Str::random(60));
-
-            event(new PasswordReset($user));
-        }
-    );
-
-    return $status == Password::PASSWORD_RESET ? view("inforeset", ['status' => __($status)]) : view("inforeset", ['status' => __($status)]);
-})->name('password.update');

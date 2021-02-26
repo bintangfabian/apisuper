@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreNews;
+use App\Http\Requests\UpdateNews;
 use App\Models\News;
 use Illuminate\Http\Request;
 use App\StatusCode;
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -15,7 +18,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        return News::get();
+        return News::with('image:id,imageable_id')->get();
     }
 
     /**
@@ -34,20 +37,23 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreNews $request)
     {
         try {
-            $news = new News;
-            // $news->news_picture = $request->news_picture;
-            $news->news_title = $request->news_title;
-            $news->news_fill = $request->news_fill;
-            if($news->save()){
-                return response()->successWithMessage('Successfully created news!', StatusCode::CREATED);
-            }
-        } 
-            catch (\Throwable $th) {
-                return response()->error('Failed to create news!', StatusCode::INTERNAL_SERVER_ERROR);
-            }
+            $news = new News($request->validated());
+            $news->save();
+
+            $request->file('thumbnail')->storeAs(
+                "public/images/news/$news->id",
+                'thumbnail.png'
+            );
+
+            $news->image()->create(['path' => "news/$news->id/thumbnail.png", 'thumbnail' => true]);
+
+            return response()->successWithMessage('Successfully created news!', StatusCode::CREATED);
+        } catch (\Throwable $th) {
+            return response()->error($th, StatusCode::INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -59,9 +65,9 @@ class NewsController extends Controller
     public function show($id)
     {
         try {
-            return News::where('id_news', $id)->first();
-        } 
-        catch (\Throwable $th) {
+            $news = News::with('image:id,imageable_id')->find($id);
+            return $news;
+        } catch (\Throwable $th) {
             return response()->error('Failed to get news!', StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
@@ -74,10 +80,9 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
+        return News::with('image:id,imageable_id')->find($id);
         try {
-            return News::where('id_news', $id)->first();
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->error('Failed to get news!', StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,18 +94,21 @@ class NewsController extends Controller
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateNews $request, $id)
     {
         try {
-            $news = News::where('id_news', $id)->first();
-            // $news->news_picture = $request->news_picture;
-            $news->news_title = $request->news_title;
-            $news->news_fill = $request->news_fill;
-            if($news->save()){
-                return response()->successWithMessage('Successfully edited news!', StatusCode::CREATED);
-            }
-        } 
-        catch (\Throwable $th) {
+            $news = News::findOrFail($id);
+            $news->fill($request->validated());
+            $news->update();
+
+            $request->file('thumbnail')->storeAs(
+                "public/images/news/$news->id",
+                'thumbnail.png'
+            );
+
+            $news->image()->update(['path' => "news/$news->id/thumbnail.png", 'thumbnail' => true]);
+            return response()->successWithMessage('Successfully edited news!', StatusCode::CREATED);
+        } catch (\Throwable $th) {
             return response()->error('Failed to edit news!', StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
@@ -114,12 +122,11 @@ class NewsController extends Controller
     public function destroy($id)
     {
         try {
-            $news = News::where('id_news', $id)->first();
-            if($news->delete()){
+            $news = News::find($id)->first();
+            if ($news->delete()) {
                 return response()->successWithMessage('Successfully deleted news!', StatusCode::CREATED);
             }
-        } 
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->error('Failed to deleted news!', StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
