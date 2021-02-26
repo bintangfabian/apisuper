@@ -49,7 +49,6 @@ class UserController extends Controller
     {
         try {
             $user = new User($request->validated());
-            $user->password = bcrypt($user->password);
             $user->save();
 
             $user->assignRole($request['role']);
@@ -57,12 +56,13 @@ class UserController extends Controller
             $avatar = Avatar::create($user->name)->getImageObject()->encode('png');
             Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar);
 
-            $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
+            $user->sendEmailVerificationNotification();
 
+            $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
         } catch (\Throwable $th) {
-            return response()->error('Failed created user!', StatusCode::INTERNAL_SERVER_ERROR);
+            return response()->error("Failed created user! $th", StatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 

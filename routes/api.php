@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Route;
@@ -25,10 +26,13 @@ use Illuminate\Support\Str;
 Route::middleware(['return.json'])->group(function () {
     Route::post('register', 'App\Http\Controllers\UserController@register');
     Route::get('images/{id}', [ImageController::class, 'show'])->name('image.show');
-    Route::post('login', 'App\Http\Controllers\UserController@login')->name('login');
+    Route::post('login', 'App\Http\Controllers\UserController@login')->middleware('verified');
     Route::get('email/verify/{id}', 'App\Http\Controllers\VerificationApiController@verify')->name('verificationapi.verify');
     Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
+    Route::get('register/verify/{id}',  [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::get('register/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
+    Route::post('images', [ImageController::class, 'store']);
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('user/detail', 'App\Http\Controllers\UserController@details');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
