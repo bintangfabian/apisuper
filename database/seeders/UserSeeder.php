@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             "name" => "admin",
             "email" => "admin@gmail.com",
             "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("admin"),
+            "password" => "admin"
         ]);
         $student1->assignRole("1");
         $avatar1 = Avatar::create($student1->name)->getImageObject()->encode('png');
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
             "name" => "kepala sekolah",
             "email" => "kepalasekolah@gmail.com",
             "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("kepalasekolah"),
+            "password" => "kepalasekolah"
         ]);
         $student2->assignRole("2");
         $avatar2 = Avatar::create($student2->name)->getImageObject()->encode('png');
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
             "name" => "guru",
             "email" => "guru@gmail.com",
             "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("guru"),
+            "password" => "guru"
         ]);
         $student3->assignRole("3");
         $avatar3 = Avatar::create($student3->name)->getImageObject()->encode('png');
@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
             "name" => "murid",
             "email" => "murid@gmail.com",
             "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("murid"),
+            "password" => "murid"
         ]);
         $student4->assignRole("4");
         $avatar4 = Avatar::create($student4->name)->getImageObject()->encode('png');
@@ -67,7 +67,7 @@ class UserSeeder extends Seeder
             "name" => "wali santri",
             "email" => "walisantri@gmail.com",
             "email_verified_at" => now()->timezone('Asia/Jakarta'),
-            "password" => Hash::make("walisantri"),
+            "password" => "walisantri"
         ]);
         $student5->assignRole("5");
         $avatar5 = Avatar::create($student5->name)->getImageObject()->encode('png');
