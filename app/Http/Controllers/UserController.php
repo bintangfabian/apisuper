@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use App\StatusCode;
 use Carbon\Carbon;
 use Avatar;
-use Validator;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
