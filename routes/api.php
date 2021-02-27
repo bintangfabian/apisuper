@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
@@ -24,24 +25,42 @@ use Illuminate\Support\Str;
 |
 */
 
-Route::middleware(['return.json'])->group(function () {
-    Route::post('register', 'App\Http\Controllers\UserController@register');
+Route::middleware(['force_return_json'])->group(function () {
     Route::get('images/{id}', [ImageController::class, 'show'])->name('image.show');
-    Route::post('login', 'App\Http\Controllers\UserController@login')->middleware('verified');
     Route::get('email/verify/{id}', 'App\Http\Controllers\VerificationApiController@verify')->name('verificationapi.verify');
     Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
     Route::get('register/verify/{id}',  [VerificationController::class, 'verify'])->name('verification.verify');
     Route::get('register/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
-    Route::post('images', [ImageController::class, 'store']);
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::get('user/detail', 'App\Http\Controllers\UserController@details');
-        Route::post('logout', 'App\Http\Controllers\UserController@logout');
-        Route::resource('/siswa', 'App\Http\Controllers\SiswaController');
+    Route::group(['middleware' => ['verified']], function () {
+        Route::post('login', 'App\Http\Controllers\UserController@login');
     });
 
-    Route::group(['middleware' => ['auth:api', 'role:3']], function () {
-        Route::resource('/news', 'App\Http\Controllers\NewsController');
+    // need to give token
+    Route::middleware('auth:api')->group(function () {
+        Route::post('images', [ImageController::class, 'store']);
+        Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
+        Route::get('user/detail', 'App\Http\Controllers\UserController@details');
+        Route::post('logout', 'App\Http\Controllers\UserController@logout');
+        Route::get('permission', [PermissionController::class, 'index']);
+        // just for user who has crud news permission
+        Route::group(['middleware' => ['permission:crud news']], function () {
+            Route::resource('news', 'App\Http\Controllers\NewsController');
+        });
+        // just for user who has view news permission
+        Route::group(['middleware' => ['permission:view news']], function () {
+            Route::resource('news', 'App\Http\Controllers\NewsController')->only('index', 'show');
+        });
+
+        // just for user who has crud announcement permission
+        Route::group(['middleware' => ['permission:crud announcement']], function () {
+            Route::apiResource('announcement', AnnouncementController::class);
+        });
+
+        // just for user who has view announcement permission
+        Route::group(['middleware' => ['permission:view announcement']], function () {
+            Route::apiResource('announcement', AnnouncementController::class)->only(['index', 'show']);
+        });
     });
 
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
@@ -49,14 +68,4 @@ Route::middleware(['return.json'])->group(function () {
         Route::get('find/{token}', [PasswordResetController::class, 'find']);
         Route::post('reset', [PasswordResetController::class, 'reset']);
     });
-
-    // Route::group(['middleware' => ['auth:api', 'role:1']], function () {
-    //     Route::resource('/news', 'App\Http\Controllers\NewsController');
-    // });
-
-    Route::apiResource('announcement', AnnouncementController::class);
-    Route::resource('news', 'App\Http\Controllers\NewsController');
 });
-
-
-Route::resource('user/edit', 'App\Http\Controllers\UserController');

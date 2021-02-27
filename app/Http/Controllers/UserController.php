@@ -23,8 +23,12 @@ class UserController extends Controller
         // try {
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials))
-            return response()->error('Email or password is not correct', StatusCode::UNAUTHORIZED);
+            return response()->error('Email atau password salah', StatusCode::UNAUTHORIZED);
         $user = $request->user();
+        $permission = $user->hasPermissionTo('login');
+        if (!$permission) {
+            return response()->error('user tidak mempunyai hak akses', StatusCode::UNAUTHORIZED);
+        }
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
         if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
@@ -36,6 +40,7 @@ class UserController extends Controller
             'token' => $tokenResult->accessToken,
             'type' => 'Bearer',
             'image_id' => $user->image->id,
+            'role' => $user->getRoleNames()[0],
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString()
@@ -59,7 +64,7 @@ class UserController extends Controller
             $user->sendEmailVerificationNotification();
 
             $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
-            if ($request['role'] == '4') {
+            if ($request['role'] === 'Siswa') {
                 $user->student()->create(['user_id' => $user->id, 'grade_id' => $request->grade_id]);
             }
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
