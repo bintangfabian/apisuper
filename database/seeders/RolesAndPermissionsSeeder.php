@@ -39,7 +39,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view news',
         ];
         $permissions = collect($arrayOfPermissionNames)->map(function ($permission) {
-        return ['name' => $permission, 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()];
+            return ['name' => $permission, 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()];
         });
 
         Permission::insert($permissions->toArray());
@@ -63,7 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'edit profile',
                 'recap user',
                 'crud announcement',
-                'crud news',
+                'view news',
             ],
             'Guru' => [
                 'login',

@@ -43,6 +43,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::get('user/detail', 'App\Http\Controllers\UserController@details');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
         Route::get('permission', [PermissionController::class, 'index']);
+        Route::get('permission/check', [PermissionController::class, 'index']);
         // just for user who has crud news permission
         Route::group(['middleware' => ['permission:crud news']], function () {
             Route::resource('news', 'App\Http\Controllers\NewsController');

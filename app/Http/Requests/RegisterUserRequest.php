@@ -28,7 +28,7 @@ class RegisterUserRequest extends FormRequest
             'role' => 'required|in:Admin,Kepala Sekolah,Guru,Siswa,Wali Siswa',
             'email' => 'required|string|email|unique:users|min:8|max:255',
             'password' => 'required|string|confirmed',
-            'grade_id' => 'required_if:role,4|exists:grades,id'
+            'grade' => 'required_if:role,Siswa|exists:grades,name'
         ];
     }
 }

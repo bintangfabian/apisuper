@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Models\Grade;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\StatusCode;
@@ -64,7 +65,8 @@ class UserController extends Controller
 
             $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
             if ($request['role'] === 'Siswa') {
-                $user->student()->create(['user_id' => $user->id, 'grade_id' => $request->grade_id]);
+                $gradeId = (Grade::where('name', $request->grade)->select('id')->get())[0]->id;
+                $user->student()->create(['user_id' => $user->id, 'grade_id' => $gradeId]);
             }
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
