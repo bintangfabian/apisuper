@@ -117,7 +117,6 @@ class UserController extends Controller
         }
         $user->fill($request->validated());
         $user->update();
-        $user->syncRoles($request['role']);
         return response()->successWithKey(new UserResource($user), 'user');
     }
 }
