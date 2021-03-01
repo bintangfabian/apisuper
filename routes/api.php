@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
@@ -32,15 +33,17 @@ Route::middleware(['force_return_json'])->group(function () {
     Route::get('register/verify/{id}',  [VerificationController::class, 'verify'])->name('verification.verify');
     Route::get('register/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
+    
     Route::group(['middleware' => ['verified']], function () {
         Route::post('login', 'App\Http\Controllers\UserController@login');
     });
-
+    
     // need to give token
     Route::middleware('auth:api')->group(function () {
+        Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
+        Route::put('users', [UserController::class, 'update'])->middleware('verified');
         Route::post('images', [ImageController::class, 'store']);
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
-        Route::get('user/detail', 'App\Http\Controllers\UserController@details');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
         Route::get('permission', [PermissionController::class, 'index']);
         Route::get('permission/check', [PermissionController::class, 'index']);

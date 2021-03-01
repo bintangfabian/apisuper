@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUser;
+use App\Http\Resources\UserResource;
 use App\Models\Grade;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +15,7 @@ use App\StatusCode;
 use Carbon\Carbon;
 use Avatar;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -95,5 +98,26 @@ class UserController extends Controller
             'email' => $user->email,
             'expired_at' => $user->expired_at,
         ]);
+    }
+
+    public function update(UpdateUser $request)
+    {
+        try {
+            $user = User::findOrFail($request->user()->id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
+            return response()->error('User is not found', StatusCode::UNAUTHORIZED);
+        } catch (\Throwable $th) {
+            return response()->error('Something went error', StatusCode::INTERNAL_SERVER_ERROR);
+        }
+
+        if (request()->hasFile('image')) {
+            $image = Image::make($request->image)->fit(278, 278, null, 'center');
+            $path = $user->image->path;
+            $image->save(Storage::disk('local')->path("public/images/$path"));
+        }
+        $user->fill($request->validated());
+        $user->update();
+        $user->syncRoles($request['role']);
+        return response()->successWithKey(new UserResource($user), 'user');
     }
 }
