@@ -37,6 +37,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view announcement',
             'crud news',
             'view news',
+            'crud question bank',
         ];
         $permissions = collect($arrayOfPermissionNames)->map(function ($permission) {
             return ['name' => $permission, 'guard_name' => 'web', 'created_at' => now(), 'updated_at' => now()];
@@ -79,6 +80,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'crud announcement',
                 'view announcement',
                 'view news',
+                'crud question bank',
             ],
             'Siswa' => [
                 'login',

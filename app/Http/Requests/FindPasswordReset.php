@@ -24,7 +24,7 @@ class FindPasswordReset extends FormRequest
     public function rules()
     {
         return [
-            'token' => 'exists:password_resets,token'
+            'token' => 'required|exists:password_resets,token'
         ];
     }
 }

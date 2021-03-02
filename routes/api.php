@@ -33,15 +33,15 @@ Route::middleware(['force_return_json'])->group(function () {
     Route::get('register/verify/{id}',  [VerificationController::class, 'verify'])->name('verification.verify');
     Route::get('register/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
-    
+
     Route::group(['middleware' => ['verified']], function () {
         Route::post('login', 'App\Http\Controllers\UserController@login');
     });
-    
+
     // need to give token
     Route::middleware('auth:api')->group(function () {
-        Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
+        Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
         Route::post('images', [ImageController::class, 'store']);
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');

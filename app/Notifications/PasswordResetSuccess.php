@@ -42,9 +42,9 @@ class PasswordResetSuccess extends Notification
     {
         return (new MailMessage)
             ->line('Kata sandi Anda telah direset.')
-            ->line('If you did change password, no further action is required.')
-            ->line('If you did not change password, protect your account.')
-            ->line('Please do not reply to this email with your password. We will never ask for your password, and we strongly discourage you from sharing it with anyone.');
+            ->line('Jika Anda memang mengubah kata sandi, tidak diperlukan tindakan lebih lanjut.')
+            ->line('Jika Anda tidak mengubah kata sandi, lindungi akun Anda.')
+            ->line('Harap jangan membalas email ini dengan kata sandi Anda. Kami tidak akan pernah meminta kata sandi Anda, dan kami sangat tidak menyarankan Anda untuk membagikannya dengan siapa pun.');
     }
 
     /**

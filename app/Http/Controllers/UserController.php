@@ -34,7 +34,8 @@ class UserController extends Controller
         }
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
-        if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
+        if (!$request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
+        if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(2);
         $token->save();
         return response()->successWithKey([
             'id' => $user->id,
@@ -92,12 +93,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         // return response()->json(['success' => $user], $this->successStatus);
-        return response()->successWithMessage([
-            'nama' => $user->name,
-            'role' => $user->role,
-            'email' => $user->email,
-            'expired_at' => $user->expired_at,
-        ]);
+        return response()->successWithKey(new UserResource($user), 'user');
     }
 
     public function update(UpdateUser $request)
@@ -109,7 +105,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->error('Something went error', StatusCode::INTERNAL_SERVER_ERROR);
         }
-
+        // return $request['email'];
         if (request()->hasFile('image')) {
             $image = Image::make($request->image)->fit(278, 278, null, 'center');
             $path = $user->image->path;
