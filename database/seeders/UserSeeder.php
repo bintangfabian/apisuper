@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
             "password" => "walisantri",
         ]);
         $student5->assignRole("Wali Siswa");
-code('png');
+        $avatar5 = Avatar::create($student5->name)->getImageObject()->encode('png');
         Storage::put('public/images/avatars/' . $student5->id . '/avatar.png', (string) $avatar5);
         $student5->image()->create(['path' => "avatars/$student5->id/avatar.png", 'thumbnail' => true]);
 
