@@ -37,7 +37,7 @@ Route::middleware(['force_return_json'])->group(function () {
     Route::group(['middleware' => ['verified']], function () {
         Route::post('login', 'App\Http\Controllers\UserController@login');
     });
-    // tes
+
     // need to give token
     Route::middleware('auth:api')->group(function () {
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
