@@ -6,13 +6,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUser;
+use App\Http\Resources\UserResource;
+use App\Models\Grade;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\StatusCode;
 use Carbon\Carbon;
 use Avatar;
-use Validator;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -23,11 +26,16 @@ class UserController extends Controller
         // try {
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials))
-            return response()->error('Email or password is not correct', StatusCode::UNAUTHORIZED);
+            return response()->error('Email atau password salah', StatusCode::UNAUTHORIZED);
         $user = $request->user();
+        $permission = $user->hasPermissionTo('login');
+        if (!$permission) {
+            return response()->error('user tidak mempunyai hak akses', StatusCode::UNAUTHORIZED);
+        }
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
-        if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
+        if (!$request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(1);
+        if ($request->remember_me) $token->expires_at = Carbon::now()->timezone('Asia/Jakarta')->addWeeks(2);
         $token->save();
         return response()->successWithKey([
             'id' => $user->id,
@@ -36,6 +44,7 @@ class UserController extends Controller
             'token' => $tokenResult->accessToken,
             'type' => 'Bearer',
             'image_id' => $user->image->id,
+            'role' => $user->getRoleNames()[0],
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
             )->toDateTimeString()
@@ -59,8 +68,9 @@ class UserController extends Controller
             $user->sendEmailVerificationNotification();
 
             $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
-            if ($request['role'] == '4') {
-                $user->student()->create(['user_id' => $user->id, 'grade_id' => $request->grade_id]);
+            if ($request['role'] === 'Siswa') {
+                $gradeId = (Grade::where('name', $request->grade)->select('id')->get())[0]->id;
+                $user->student()->create(['user_id' => $user->id, 'grade_id' => $gradeId]);
             }
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);
@@ -83,11 +93,26 @@ class UserController extends Controller
     {
         $user = Auth::user();
         // return response()->json(['success' => $user], $this->successStatus);
-        return response()->successWithMessage([
-            'nama' => $user->name,
-            'role' => $user->role,
-            'email' => $user->email,
-            'expired_at' => $user->expired_at,
-        ]);
+        return response()->successWithKey(new UserResource($user), 'user');
+    }
+
+    public function update(UpdateUser $request)
+    {
+        try {
+            $user = User::findOrFail($request->user()->id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
+            return response()->error('User is not found', StatusCode::UNAUTHORIZED);
+        } catch (\Throwable $th) {
+            return response()->error('Something went error', StatusCode::INTERNAL_SERVER_ERROR);
+        }
+        // return $request['email'];
+        if (request()->hasFile('image')) {
+            $image = Image::make($request->image)->fit(278, 278, null, 'center');
+            $path = $user->image->path;
+            $image->save(Storage::disk('local')->path("public/images/$path"));
+        }
+        $user->fill($request->validated());
+        $user->update();
+        return response()->successWithKey(new UserResource($user), 'user');
     }
 }

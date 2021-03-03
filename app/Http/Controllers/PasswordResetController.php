@@ -49,11 +49,10 @@ class PasswordResetController extends Controller
      * @return [string] message
      * @return [json] passwordReset object
      */
-    public function find(FindPasswordReset $request)
+    public function find($token)
     {
-        $resetPassword = PasswordReset::where('token', $request->validated())->first();
-        // if (!$resetPassword)
-        //     return response()->error('Reset password token is invalid!');
+        $resetPassword = PasswordReset::where('token', $token)->first();
+        if (!$resetPassword) return response()->error('Reset password token is invalid!');
 
         if (Carbon::parse($resetPassword->updated_at)->addMinutes(720)->isPast()) {
             $resetPassword->delete();

@@ -63,9 +63,13 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
+<<<<<<< HEAD
         "post-install-cmd": [
             "php artisan migrate:fresh --seed --force",
             "php artisan passport:install --force"
         ]
+=======
+        "post-install-cmd": ["php artisan migrate:fresh --seed --force", "php artisan passport:install --force" ]
+>>>>>>> c1ba2f875a8fa0371f76c99b719aeeb633a1bee8
     }
 }
