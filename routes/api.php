@@ -37,7 +37,7 @@ Route::middleware(['force_return_json'])->group(function () {
     Route::group(['middleware' => ['verified']], function () {
         Route::post('login', 'App\Http\Controllers\UserController@login');
     });
-    // tes
+
     // need to give token
     Route::middleware('auth:api')->group(function () {
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
@@ -61,32 +61,6 @@ Route::middleware(['force_return_json'])->group(function () {
             Route::apiResource('announcement', AnnouncementController::class);
         });
 
-<<<<<<< HEAD
-    // need to give token
-    Route::middleware('auth:api')->group(function () {
-        Route::put('users', [UserController::class, 'update'])->middleware('verified');
-        Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
-        Route::post('images', [ImageController::class, 'store']);
-        Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
-        Route::post('logout', 'App\Http\Controllers\UserController@logout');
-        Route::get('permission', [PermissionController::class, 'index']);
-        Route::get('permission/check', [PermissionController::class, 'index']);
-        // just for user who has crud news permission
-        Route::group(['middleware' => ['permission:crud news']], function () {
-            Route::resource('news', 'App\Http\Controllers\NewsController');
-        });
-        // just for user who has view news permission
-        Route::group(['middleware' => ['permission:view news']], function () {
-            Route::resource('news', 'App\Http\Controllers\NewsController')->only('index', 'show');
-        });
-
-        // just for user who has crud announcement permission
-        Route::group(['middleware' => ['permission:crud announcement']], function () {
-            Route::apiResource('announcement', AnnouncementController::class);
-        });
-
-=======
->>>>>>> c1ba2f875a8fa0371f76c99b719aeeb633a1bee8
         // just for user who has view announcement permission
         Route::group(['middleware' => ['permission:view announcement']], function () {
             Route::apiResource('announcement', AnnouncementController::class)->only(['index', 'show']);
@@ -98,8 +72,4 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::get('find/{token}', [PasswordResetController::class, 'find']);
         Route::post('reset', [PasswordResetController::class, 'reset']);
     });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> c1ba2f875a8fa0371f76c99b719aeeb633a1bee8
