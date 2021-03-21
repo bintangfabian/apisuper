@@ -1,0 +1,24 @@
+{
+    	"options": [
+		{
+			"name": "a",
+			"content": "proton",
+			"is_true": true
+		},
+		{
+			"name": "b",
+			"content": "neutron",
+			"is_true": false
+		},
+		{
+			"name": "c",
+			"content": "elektron",
+			"is_true": false
+		},
+		{
+			"name": "d",
+			"content": "Isotop",
+			"is_true": false
+		}
+	]
+}

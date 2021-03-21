@@ -10,8 +10,18 @@ class Subject extends Model
     use HasFactory;
     protected $fillable = ['name'];
 
-    public function chapter()
+    public function chapters()
     {
-        $this->hasMany(Chapter::class);
+        return $this->hasMany(Chapter::class);
+    }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
+
+    public function learningMaterials()
+    {
+        return $this->hasMany(LearningMaterial::class);
     }
 }

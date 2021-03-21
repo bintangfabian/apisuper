@@ -8,15 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Chapter extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $guarded = ['id'];
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function learningMaterials()
+    {
+        return $this->hasMany(LearningMaterial::class);
     }
 
     public function subject()
     {
-        $this->belongsTo(Subject::class);
+        return $this->belongsTo(Subject::class);
     }
 }
