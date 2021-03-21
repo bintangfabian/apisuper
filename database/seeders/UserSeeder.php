@@ -63,6 +63,30 @@ class UserSeeder extends Seeder
         Storage::put('public/images/avatars/' . $student4->id . '/avatar.png', (string) $avatar4);
         $student4->image()->create(['path' => "avatars/$student4->id/avatar.png", 'thumbnail' => true]);
 
+        $user = User::create([
+            "name" => "murid2",
+            "email" => "murid2@gmail.com",
+            "email_verified_at" => now()->timezone('Asia/Jakarta'),
+            "password" => "murid2",
+        ]);
+        $user->student()->create(['user_id' => $user->id, 'grade_id' => 2]);
+        $user->assignRole("Siswa");
+        $avatar4 = Avatar::create($user->name)->getImageObject()->encode('png');
+        Storage::put('public/images/avatars/' . $user->id . '/avatar.png', (string) $avatar4);
+        $user->image()->create(['path' => "avatars/$user->id/avatar.png", 'thumbnail' => true]);
+
+        $user2 = User::create([
+            "name" => "murid3",
+            "email" => "murid3@gmail.com",
+            "email_verified_at" => now()->timezone('Asia/Jakarta'),
+            "password" => "murid3",
+        ]);
+        $user2->student()->create(['user_id' => $user2->id, 'grade_id' => 2]);
+        $user2->assignRole("Siswa");
+        $avatar4 = Avatar::create($user2->name)->getImageObject()->encode('png');
+        Storage::put('public/images/avatars/' . $user2->id . '/avatar.png', (string) $avatar4);
+        $user2->image()->create(['path' => "avatars/$user2->id/avatar.png", 'thumbnail' => true]);
+
         $student5 = User::create([
             "name" => "wali santri",
             "email" => "walisantri@gmail.com",

@@ -26,6 +26,7 @@ class UpdateAnnouncement extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'grade_id' => 'exists:grades,id|sometimes|nullable',
         ];
     }
 }

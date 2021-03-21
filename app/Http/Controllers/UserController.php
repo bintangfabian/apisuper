@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EditPermissionsUser;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUser;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Avatar;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -114,5 +116,21 @@ class UserController extends Controller
         $user->fill($request->validated());
         $user->update();
         return response()->successWithKey(new UserResource($user), 'user');
+    }
+
+    public function recapUser(Request $request, $role = null)
+    {
+        $user = (new User)->newQuery();
+        if ($request->query('search')) {
+            $searchQuery = $request->query('search');
+            $user->where('name', 'LIKE', '%' . $searchQuery . '%')->orWhere('email', 'LIKE', '%' . $searchQuery . '%');
+        }
+        // dd($request->query('search'));
+        if ($role) {
+            $user->with('roles')->role($role);
+        } else {
+            $user->with('roles');
+        }
+        return $user->paginate(15);
     }
 }

@@ -24,9 +24,8 @@ class StoreChapter extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|max:255',
-            'user_id' => 'string|exists:user,id',
-            'subject_id' => 'string|exists:subject,id',
+            'name' => 'required|string|max:255',
+            'subject_id' => 'required|exists:subjects,id',
         ];
     }
 }

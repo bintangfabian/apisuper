@@ -6,6 +6,8 @@ use App\Http\Requests\StoreAnnouncement;
 use App\Http\Requests\UpdateAnnouncement;
 use App\Models\Announcement;
 use App\StatusCode;
+use Facade\Ignition\QueryRecorder\Query;
+use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
 {
@@ -14,9 +16,27 @@ class AnnouncementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Announcement::paginate(15);
+        $user = $request->user();
+        if ($user->student) {
+            $announcement = Announcement::with('user')->where('grade_id', $user->student->grade_id)->orWhere('grade_id', null)->latest('created_at');
+            return $announcement->paginate($request->query('per_page'));
+        }
+        $announcement = Announcement::with('user')->where('grade_id', null)->latest('created_at');
+        return $announcement->paginate($request->query('per_page'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function management(Request $request)
+    {
+        $user = $request->user();
+        return Announcement::where('user_id', $user->id)->paginate(15);
+        // return $user->hasPermissionTo('crud announcement');
     }
 
     /**
@@ -27,7 +47,10 @@ class AnnouncementController extends Controller
      */
     public function store(StoreAnnouncement $request)
     {
+        $user = $request->user();
         $announcement = new Announcement($request->validated());
+        // return $request->validated();
+        $announcement->user_id = $user->id;
         try {
             $announcement->save();
         } catch (\Throwable $th) {
@@ -75,7 +98,7 @@ class AnnouncementController extends Controller
             return response()->error('Gagal mengubah pengumuman!', StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return response()->successWithMessage('Berhasil mengubah pengumuman!', StatusCode::CREATED);
+        return response()->successWithMessage('Berhasil mengubah pengumuman!', StatusCode::OK);
     }
 
     /**
@@ -95,8 +118,13 @@ class AnnouncementController extends Controller
         try {
             $announcement->delete();
         } catch (\Throwable $th) {
-            return response()->error('Gagal  menghapus pengumuman!', StatusCode::INTERNAL_SERVER_ERROR);
+            return response()->error('Gagal menghapus pengumuman!', StatusCode::INTERNAL_SERVER_ERROR);
         }
-        return response()->successWithMessage('Berhasil menghapus pengumuman!', StatusCode::CREATED);
+        return response()->successWithMessage('Berhasil menghapus pengumuman!', StatusCode::OK);
+    }
+
+    public function search($q)
+    {
+        return Announcement::where('title', 'LIKE', '%' . $q . '%')->paginate(15);
     }
 }

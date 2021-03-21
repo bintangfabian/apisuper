@@ -45,9 +45,19 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function getCreatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['created_at'])->isoFormat('LL');
+    }
+
     public function image()
     {
         return $this->morphOne('App\Models\Image', 'imageable');
+    }
+
+    public function news()
+    {
+        return $this->hasMany('App\Models\News');
     }
 
     public function setPasswordAttribute($password)
@@ -55,13 +65,28 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->attributes['password'] = bcrypt($password);
     }
 
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
+
     public function student()
     {
         return $this->hasOne(Student::class);
     }
 
-    public function chapter()
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
+    public function chapters()
     {
         return $this->hasMany(Chapter::class);
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
     }
 }

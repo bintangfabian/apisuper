@@ -18,4 +18,10 @@ class News extends Model
     {
         return $this->morphOne('App\Models\Image', 'imageable');
     }
+
+
+    public function user()
+    {
+        $this->belongsTo(User::class);
+    }
 }

@@ -9,8 +9,23 @@ class Announcement extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'description',
+    protected $guarded = ['id'];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
