@@ -37,7 +37,7 @@ Route::middleware(['force_return_json'])->group(function () {
     // Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
 
     Route::group(['middleware' => ['verified']], function () {
-        Route::post('login', 'App\Http\Controllers\UserController@login');
+        Route::post('login', 'App\Http\Controllers\UserController@login')->middleware('preflight');
     });
 
     // need to give token
