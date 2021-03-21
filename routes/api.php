@@ -47,7 +47,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
         Route::post('images', [ImageController::class, 'store']);
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
-        Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware('permission:recap user');
+        Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware(['permission:recap user', 'preflight']);
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
         Route::get('permission', [PermissionController::class, 'index']);
         Route::get('permission/check', [PermissionController::class, 'index']);
