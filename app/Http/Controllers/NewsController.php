@@ -74,18 +74,28 @@ class NewsController extends Controller
     {
         try {
             $news = News::findOrFail($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
+            return response()->error('Berita tidak ditemukan', StatusCode::UNAUTHORIZED);
+        } catch (\Throwable $th) {
+            return response()->error('Terjadi kesalahan', StatusCode::INTERNAL_SERVER_ERROR);
+        }
+        try {
             $news->fill($request->validated());
             $news->update();
-
-            $request->file('thumbnail')->storeAs(
-                "public/images/news/$news->id",
-                'thumbnail.png'
-            );
-
-            $news->image()->update(['path' => "news/$news->id/thumbnail.png", 'thumbnail' => true]);
-            return response()->successWithMessage('Sukses edit berita!', StatusCode::CREATED);
         } catch (\Throwable $th) {
-            return response()->error('Sukses edit berita!', StatusCode::INTERNAL_SERVER_ERROR);
+            return response()->error('Gagal edit berita!', StatusCode::INTERNAL_SERVER_ERROR);
+        }
+        if (request()->hasFile('image')) {
+            try {
+                $request->file('thumbnail')->storeAs(
+                    "public/images/news/$news->id",
+                    'thumbnail.png'
+                );
+                $news->image()->update(['path' => "news/$news->id/thumbnail.png", 'thumbnail' => true]);
+                return response()->successWithMessage('Sukses edit berita!', StatusCode::CREATED);
+            } catch (\Throwable $th) {
+                return response()->error('Gagal mengubah gambar ketika mengedit berita!!', StatusCode::INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
