@@ -14,10 +14,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
-        Middleware\PreflightResponse::class,
-        \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
+        // \App\Http\Middleware\TrustHosts::class,
+        // \App\Http\Middleware\Cors::class,
+        // Middleware\PreflightResponse::class,
+        \App\Http\Middleware\TrustProxies::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -41,6 +42,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            // \App\Http\Middleware\Cors::class,
             \App\Http\Middleware\JsonMiddleware::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -71,5 +73,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'cekverified' => \App\Http\Middleware\CekVerified::class,
         'preflight' => Middleware\PreflightResponse::class,
+        'cors' => \App\Http\Middleware\Cors::class, // <-- add this line
     ];
 }

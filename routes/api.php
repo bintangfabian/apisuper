@@ -37,7 +37,7 @@ Route::middleware(['force_return_json'])->group(function () {
     // Route::post('email/resend', 'App\Http\Controllers\VerificationApiController@resend')->name('verificationapi.resend');
 
     Route::group(['middleware' => ['verified']], function () {
-        Route::post('login', 'App\Http\Controllers\UserController@login')->middleware('preflight');
+        Route::post('login', 'App\Http\Controllers\UserController@login');
     });
 
     // need to give token
@@ -47,7 +47,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
         Route::post('images', [ImageController::class, 'store']);
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
-        Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware(['permission:recap user', 'preflight']);
+        Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware('permission:recap user');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
         Route::get('permission', [PermissionController::class, 'index']);
         Route::get('permission/check', [PermissionController::class, 'index']);
