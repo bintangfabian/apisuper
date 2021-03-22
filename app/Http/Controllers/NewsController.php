@@ -24,6 +24,17 @@ class NewsController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search($q)
+    {
+        $news = News::where('title', 'LIKE', '%' . $q . '%')->paginate(15);
+        return $news;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

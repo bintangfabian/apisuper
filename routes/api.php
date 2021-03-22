@@ -8,6 +8,7 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\LearningMaterialController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StudentAttendanceController;
@@ -62,6 +63,7 @@ Route::middleware(['force_return_json'])->group(function () {
 
         // just for user who has crud news permission
         Route::group(['middleware' => ['permission:crud news']], function () {
+            Route::get('news/search/{query}', [NewsController::class, 'search']);
             Route::apiResource('news', 'App\Http\Controllers\NewsController');
         });
 
