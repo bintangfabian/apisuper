@@ -19,6 +19,10 @@ class News extends Model
         return $this->morphOne('App\Models\Image', 'imageable');
     }
 
+    public function getCreatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['created_at'])->isoFormat('LL');
+    }
 
     public function user()
     {

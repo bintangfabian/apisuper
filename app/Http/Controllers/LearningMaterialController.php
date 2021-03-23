@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLearningMaterial;
 use App\Http\Requests\UpdateLearningMaterial;
+use App\Models\Chapter;
 use App\Models\LearningMaterial;
 use App\StatusCode;
 use Illuminate\Http\Request;
@@ -15,9 +16,10 @@ class LearningMaterialController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return LearningMaterial::with(['subject', 'grade', 'chapter'])->paginate(15);
+        $user = $request->user();
+        return LearningMaterial::with(['subject', 'grade', 'chapter'])->where('user_id', $user->id)->paginate(15);
     }
 
     /**
@@ -98,5 +100,15 @@ class LearningMaterialController extends Controller
             return response()->error('Gagal menghapus materi pembelajaran!', StatusCode::INTERNAL_SERVER_ERROR);
         }
         return response()->successWithMessage('Berhasil menghapus materi pembelajaran!', StatusCode::OK);
+    }
+
+
+    public function search($q)
+    {
+        return LearningMaterial::whereHas('subject', function ($query) use ($q) {
+            return $query->where('name', 'LIKE', '%' . $q . '%');
+        })->orWhereHas('chapter', function ($query) use ($q) {
+            return $query->where('name', 'LIKE', '%' . $q . '%');
+        })->orWhere('title', 'LIKE', '%' . $q . '%')->with(['subject', 'grade', 'chapter'])->paginate(15);
     }
 }

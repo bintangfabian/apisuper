@@ -17,6 +17,7 @@ class CreateLearningMaterialsTable extends Migration
             $table->id();
             $table->string('title');
             $table->foreignId('grade_id')->nullable();
+            $table->foreignId('user_id');
             $table->foreignId('subject_id');
             $table->foreignId('chapter_id');
             $table->text('content');

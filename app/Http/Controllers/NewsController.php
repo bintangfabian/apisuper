@@ -17,9 +17,9 @@ class NewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($per_page = 15)
+    public function index(Request $request)
     {
-        $news = News::with('image:id,imageable_id')->paginate($per_page);
+        $news = News::with('image:id,imageable_id')->paginate($request->query('per_page'));
         return $news;
     }
 

@@ -60,6 +60,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\News');
     }
 
+    public function learningMaterials()
+    {
+        return $this->hasMany(LearningMaterial::class);
+    }
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
@@ -73,6 +78,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function student()
     {
         return $this->hasOne(Student::class);
+    }
+
+    public function guardianOfStudent()
+    {
+        return $this->hasOne(GuardianOfStudent::class);
     }
 
     public function announcements()

@@ -12,6 +12,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StudentAttendanceController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
@@ -43,6 +44,7 @@ Route::middleware(['force_return_json'])->group(function () {
 
     // need to give token
     Route::middleware('auth:api')->group(function () {
+        Route::get('students', [StudentController::class, 'index'])->middleware('permission:register');
         Route::put('permission', [PermissionController::class, 'update'])->middleware('permission:edit permission');
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
         Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
@@ -75,6 +77,7 @@ Route::middleware(['force_return_json'])->group(function () {
         // just for user who has crud learning materials
         Route::group(['middleware' => ['permission:crud learning materials']], function () {
             Route::apiResource('learning-materials', LearningMaterialController::class);
+            Route::get('learning-materials/search/{q}', [LearningMaterialController::class, 'search']);
         });
 
         // just for user who has crud exam

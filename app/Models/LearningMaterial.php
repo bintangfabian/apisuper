@@ -21,8 +21,18 @@ class LearningMaterial extends Model
         return $this->belongsTo(Grade::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function chapter()
     {
         return $this->belongsTo(Chapter::class);
+    }
+
+    public function getUpdatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['updated_at'])->isoFormat('LL');
     }
 }

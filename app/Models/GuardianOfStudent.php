@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class GuardianOfStudent extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function student()
+    {
+        return $this->belongsTo('student');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('user');
+    }
 }

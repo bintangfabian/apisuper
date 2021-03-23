@@ -73,6 +73,8 @@ class UserController extends Controller
             if ($request['role'] === 'Siswa') {
                 $gradeId = (Grade::where('name', $request->grade)->select('id')->get())[0]->id;
                 $user->student()->create(['user_id' => $user->id, 'grade_id' => $gradeId]);
+            } else if ($request['role'] === 'Wali Siswa') {
+                $user->guardianOfStudent()->create(['user_id' => $user->id, 'student_id' => $request->student_id]);
             }
             // return response()->successWithMessage('hai!', StatusCode::CREATED);
             return response()->successWithMessage("Successfully created user!", StatusCode::CREATED);

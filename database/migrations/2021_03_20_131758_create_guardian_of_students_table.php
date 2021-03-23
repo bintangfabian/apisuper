@@ -15,6 +15,8 @@ class CreateGuardianOfStudentsTable extends Migration
     {
         Schema::create('guardian_of_students', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('student_id');
             $table->timestamps();
         });
     }

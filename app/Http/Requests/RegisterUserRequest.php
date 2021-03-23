@@ -26,8 +26,9 @@ class RegisterUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'role' => 'required|in:Admin,Kepala Sekolah,Guru,Siswa,Wali Siswa',
-            'email' => 'required|string|email|unique:users|min:8|max:255',
+            'email' => 'required|string|email|unique:users|max:255',
             'password' => 'required|string|confirmed',
+            'student_id' => 'required_if:role,Wali Siswa|string|exists:students,id|unique:guardian_of_students,student_id',
             'grade' => 'required_if:role,Siswa|exists:grades,name'
         ];
     }
