@@ -13,7 +13,7 @@ class StoreAttitude extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,11 +25,12 @@ class StoreAttitude extends FormRequest
     {
         return [
             'student_id' => 'required|exists:students,id',
-            'semester' => 'required|char',
+            'semester' => 'required|string|max:1',
             'behavior' => 'required|string|max:255',
             'neatness' => 'required|string|max:255',
             'discipline' => 'required|string|max:255',
             'cooperation' => 'required|string|max:255',
+            'creative' => 'required|string|max:255',
             'information' => 'required|string|max:255',
         ];
     }

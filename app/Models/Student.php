@@ -20,6 +20,11 @@ class Student extends Model
         return $this->hasMany(StudentAttendance::class);
     }
 
+    public function attitudeAssessments()
+    {
+        return $this->hasMany(AttitudeAssessment::class);
+    }
+
     public function grade()
     {
         return $this->belongsTo(Grade::class);
