@@ -14,7 +14,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return Subject::get();
+        return Subject::paginate(15);
     }
 
     /**
