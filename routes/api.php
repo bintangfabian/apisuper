@@ -44,6 +44,9 @@ Route::middleware(['force_return_json'])->group(function () {
 
     // need to give token
     Route::middleware('auth:api')->group(function () {
+        Route::get('tes', function () {
+            return 'hai';
+        })->middleware('role:Guru');
         Route::get('students', [StudentController::class, 'index'])->middleware('permission:register');
         Route::put('permission', [PermissionController::class, 'update'])->middleware('permission:edit permission');
         Route::put('users', [UserController::class, 'update'])->middleware('verified');

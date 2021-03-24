@@ -31,9 +31,11 @@ class LearningMaterialController extends Controller
     public function store(StoreLearningMaterial $request)
     {
         $learningMaterial = new LearningMaterial($request->validated());
+        $learningMaterial->user_id = $request->user()->id;
         try {
             $learningMaterial->save();
         } catch (\Throwable $th) {
+            return $th;
             return response()->error('Gagal menambahkan materi pembelajaran');
         }
         return response()->successWithMessage('Sukses menambahkan materi pembelajaran');
