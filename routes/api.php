@@ -14,6 +14,7 @@ use App\Http\Controllers\StudentAttendanceController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\AttitudeAssessmentController;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +46,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::put('permission', [PermissionController::class, 'update'])->middleware('permission:edit permission');
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
         Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
-        Route::post('images', [ImageController::class, 'store']);
+        Route::post('images', [ImageController::class, 'store']); 
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
         Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware('permission:recap user');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
@@ -53,6 +54,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::get('permission/check', [PermissionController::class, 'index']);
         Route::get('grades', [GradeController::class, 'index']);
         Route::get('subjects', [SubjectController::class, 'index']);
+        // Route::get('attitude', [AttitudeAssessmentController::class, 'index']);
 
         // just for user who has crud news permission
         Route::group(['middleware' => ['permission:crud chapter']], function () {
@@ -84,6 +86,11 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::group(['middleware' => ['permission:crud question bank']], function () {
             Route::apiResource('exam-question', ExamQuestionController::class);
             Route::apiResource('question', QuestionController::class);
+        });
+
+        Route::group(['middleware' => ['permission:crud attitude assessment']], function () {
+            Route::apiResource('attitude-assessment', AttitudeAssessmentController::class);
+            // Route::get('chapter/search/{q}',nt [AttitudeAssessmentController::class, 'search']);
         });
 
         // just for user who has crud announcement permission
