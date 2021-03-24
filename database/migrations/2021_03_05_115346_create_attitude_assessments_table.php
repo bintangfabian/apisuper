@@ -15,6 +15,14 @@ class CreateAttitudeAssessmentsTable extends Migration
     {
         Schema::create('attitude_assessments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('student_id');
+            $table->char('semester');
+            $table->string('behavior');
+            $table->string('neatness');
+            $table->string('discipline');
+            $table->string('cooperation');
+            $table->string('creative');
+            $table->string('information');
             $table->timestamps();
         });
     }

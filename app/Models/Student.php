@@ -24,6 +24,11 @@ class Student extends Model
     {
         return $this->hasOne(GuardianOfStudent::class);
     }
+    
+    public function attitudeAssessments()
+    {
+        return $this->hasMany(AttitudeAssessment::class);
+    }
 
     public function grade()
     {
