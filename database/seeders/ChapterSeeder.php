@@ -20,7 +20,7 @@ class ChapterSeeder extends Seeder
         4,
         3,
         4,
-        6,
+        5,
     ];
 
     /**
