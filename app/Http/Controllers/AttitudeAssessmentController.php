@@ -30,9 +30,15 @@ class AttitudeAssessmentController extends Controller
 
     public function store(StoreAttitude $request)
     {
-        $attitude = new AttitudeAssessment($request->validated());
+        $attitudeAssessment = $request->validated()['attitude_assessment'];
+        foreach ($attitudeAssessment as $key => $value) {
+            $value['semester'] = $request->validated()['semester'];
+            $value['created_at'] = now();
+            $value['updated_at'] = now();
+            $attitudeAssessment[$key] = $value;
+        }
         try {
-            $attitude->save();
+            AttitudeAssessment::insert($attitudeAssessment);
         } catch (\Throwable $th) {
             return $th;
             return response()->error('Gagal menambahkan data attitude!', StatusCode::INTERNAL_SERVER_ERROR);
@@ -48,15 +54,19 @@ class AttitudeAssessmentController extends Controller
             try {
                 $tes =  AttitudeAssessment::where('semester', $request->semester)->where('student_id', $value['student_id'])->first();
             } catch (\Throwable $th) {
-                return response()->error('Kehadiran siswa tidak ditemukan!', StatusCode::UNPROCESSABLE_ENTITY);
+                return response()->error('Penilaian sikap tidak ditemukan!', StatusCode::UNPROCESSABLE_ENTITY);
             }
-            $tes->fill(['status' => $value['status']]);
+            foreach ($value as $keyItem => $item) {
+                $tes->fill([
+                    $keyItem => $item,
+                ]);
+            };
             try {
                 $tes->update();
             } catch (\Throwable $th) {
-                return response()->error('Gagal menambahkan kehadiran siswa!');
+                return response()->error('Gagal mengubah Penilaian sikap!');
             }
         }
-        return response()->success('Berhasil menambahkan kehadiran siswa!');
+        return response()->success('Berhasil mengubah Penilaian sikap!');
     }
 }

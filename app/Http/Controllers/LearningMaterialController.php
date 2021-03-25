@@ -19,7 +19,7 @@ class LearningMaterialController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        return LearningMaterial::with(['subject', 'grade', 'chapter'])->where('user_id', $user->id)->paginate(15);
+        return LearningMaterial::with(['subject', 'grade', 'chapter'])->where('user_id', $user->id)->paginate(1);
     }
 
     /**

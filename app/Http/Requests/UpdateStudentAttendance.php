@@ -24,10 +24,15 @@ class UpdateStudentAttendance extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'date|required',
-            'student_attendance' => 'required|array',
-            'student_attendance.*.student_id' => 'exists:students,id|required',
-            'student_attendance.*.status' => 'in:Hadir,Izin,Absen,Sakit,Telat|required',
+            'semester' => 'required|string|max:1',
+            'attitude_assessment' => 'required|array',
+            'attitude_assessment.*.student_id' => 'exists:students,id|required',
+            'attitude_assessment.*.behavior' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.neatness' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.discipline' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.cooperation' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.creative' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.information' => 'required|string|max:255',
         ];
     }
 }

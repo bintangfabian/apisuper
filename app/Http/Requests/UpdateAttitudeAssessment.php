@@ -24,14 +24,15 @@ class UpdateAttitudeAssessment extends FormRequest
     public function rules()
     {
         return [
-            'student_id' => 'required|exists:students,id',
-            'semester' => 'required|string|max:1|exists:attitude_assessment,semester',
-            'behavior' => 'required|string|max:255',
-            'neatness' => 'required|string|max:255',
-            'discipline' => 'required|string|max:255',
-            'cooperation' => 'required|string|max:255',
-            'creative' => 'required|string|max:255',
-            'information' => 'required|string|max:255',
+            'attitude_assessment' => 'required|array',
+            'semester' => 'required|string|max:1|exists:attitude_assessments,semester',
+            'attitude_assessment.*.student_id' => 'exists:students,id|required',
+            'attitude_assessment.*.behavior' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.neatness' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.discipline' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.cooperation' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.creative' => 'required|string|max:255|in:sangat baik,baik,cukup,kurang',
+            'attitude_assessment.*.information' => 'required|string|max:255',
         ];
     }
 }
