@@ -52,7 +52,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::put('permission', [PermissionController::class, 'update'])->middleware('permission:edit permission');
         Route::put('users', [UserController::class, 'update'])->middleware('verified');
         Route::get('user/detail', 'App\Http\Controllers\UserController@details')->middleware('verified');
-        Route::post('images', [ImageController::class, 'store']); 
+        Route::post('images', [ImageController::class, 'store']);
         Route::post('register', 'App\Http\Controllers\UserController@register')->middleware('permission:register');
         Route::get('recap-user/{role?}', 'App\Http\Controllers\UserController@recapUser')->middleware('permission:recap user');
         Route::post('logout', 'App\Http\Controllers\UserController@logout');
@@ -98,7 +98,7 @@ Route::middleware(['force_return_json'])->group(function () {
 
         Route::group(['middleware' => ['permission:crud attitude assessment']], function () {
             Route::apiResource('attitude-assessment', AttitudeAssessmentController::class);
-            Route::get('attitude-assessment/{semester}/{gradeId}', [AttitudeAssessmentController::class, 'showByGradeAndDate']);
+            Route::get('attitude-assessment/{semester}/{gradeId}', [AttitudeAssessmentController::class, 'showByGradeAndSemester']);
             // Route::get('chapter/search/{q}',nt [AttitudeAssessmentController::class, 'search']);
         });
 
