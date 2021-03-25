@@ -69,4 +69,24 @@ class AttitudeAssessmentController extends Controller
         }
         return response()->success('Berhasil mengubah Penilaian sikap!');
     }
+
+    public function destroyByGradeAndSemester($gradeId, $semester)
+    {
+        try {
+            AttitudeAssessment::where('semester', $semester)->whereHas('student', function ($q) use ($gradeId) {
+                $q->where('grade_id', $gradeId);
+            })->firstOrFail();
+        } catch (\Throwable $th) {
+            return response()->error('Penilaian sikap tidak ditemukan!', StatusCode::UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            AttitudeAssessment::where('semester', $semester)->whereHas('student', function ($q) use ($gradeId) {
+                $q->where('grade_id', $gradeId);
+            })->delete();
+        } catch (\Throwable $th) {
+            return response()->error('Gagal menghapus penilaian sikap!', StatusCode::INTERNAL_SERVER_ERROR);
+        }
+        return response()->successWithMessage('Berhasil menghapus penilaian sikap!', StatusCode::OK);
+    }
 }

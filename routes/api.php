@@ -99,7 +99,7 @@ Route::middleware(['force_return_json'])->group(function () {
         Route::group(['middleware' => ['permission:crud attitude assessment']], function () {
             Route::apiResource('attitude-assessment', AttitudeAssessmentController::class);
             Route::get('attitude-assessment/{semester}/{gradeId}', [AttitudeAssessmentController::class, 'showByGradeAndSemester']);
-            // Route::get('chapter/search/{q}',nt [AttitudeAssessmentController::class, 'search']);
+            Route::delete('attitude-assessment/{gradeId}/{semester}', [AttitudeAssessmentController::class, 'destroyByGradeAndSemester']);
         });
 
         // just for user who has crud announcement permission

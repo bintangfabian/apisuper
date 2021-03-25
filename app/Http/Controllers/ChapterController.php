@@ -19,7 +19,7 @@ class ChapterController extends Controller
     {
         $user = $request->user();
         try {
-            $chapter = Chapter::where('user_id', $user->id)->with(['subject'])->paginate(1);
+            $chapter = Chapter::where('user_id', $user->id)->with(['subject'])->paginate(15);
         } catch (\Throwable $th) {
             return $th;
             return response()->error('Bab tidak ditemukan!', StatusCode::UNPROCESSABLE_ENTITY);
