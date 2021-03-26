@@ -52,24 +52,45 @@ class StudentAttendanceController extends Controller
     public function recapByMonthAndYear($month, $year, Request $request)
     {
         $user = $request->user();
-        try {
-            $student = Student::where('user_id', $user->id)->firstOrFail();
-        } catch (\Throwable $th) {
-            return response()->error('Siswa tidak ditemukan!');
+        // return $user->guardianOfStudent->student_id;
+        if ($user->hasRole('Siswa')) {
+            try {
+                $student = Student::where('user_id', $user->id)->firstOrFail();
+            } catch (\Throwable $th) {
+                return response()->error('Siswa tidak ditemukan!');
+            }
+            $studentAttendances = StudentAttendance::whereMonth('date', $month)->where('student_id', $student->id)->whereYear('date', $year)->with('student.user')->get();
+            $uniqueStudentId = collect($studentAttendances)->unique('student_id');
+            $newArray = [];
+            foreach ($uniqueStudentId as $key => $value) {
+                $attendances =  ($this->getAttendances($value['student_id'], collect($studentAttendances)))->toArray();
+                array_push($newArray, [
+                    'id' => $value['student']['user']['id'],
+                    'name' => $value['student']['user']['name'],
+                    'attendances' => $attendances,
+                ]);
+            }
+            return $newArray;
+        } else if ($user->hasRole('Wali Siswa')) {
+            $guardianOfStudentId = $user->id;
+            try {
+                $student = Student::where('id', $user->guardianOfStudent->student_id)->firstOrFail();
+            } catch (\Throwable $th) {
+                return response()->error('Siswa tidak ditemukan!');
+            }
+            $studentAttendances = StudentAttendance::whereMonth('date', $month)->where('student_id', $user->guardianOfStudent->student_id)->whereYear('date', $year)->with('student.user')->get();
+            $uniqueStudentId = collect($studentAttendances)->unique('student_id');
+            $newArray = [];
+            foreach ($uniqueStudentId as $key => $value) {
+                $attendances =  ($this->getAttendances($value['student_id'], collect($studentAttendances)))->toArray();
+                array_push($newArray, [
+                    'id' => $value['student']['user']['id'],
+                    'name' => $value['student']['user']['name'],
+                    'attendances' => $attendances,
+                ]);
+            }
+            return $newArray;
         }
-        // dd($student);
-        $studentAttendances = StudentAttendance::whereMonth('date', $month)->where('student_id', $student->id)->whereYear('date', $year)->with('student.user')->get();
-        $uniqueStudentId = collect($studentAttendances)->unique('student_id');
-        $newArray = [];
-        foreach ($uniqueStudentId as $key => $value) {
-            $attendances =  ($this->getAttendances($value['student_id'], collect($studentAttendances)))->toArray();
-            array_push($newArray, [
-                'id' => $value['student']['user']['id'],
-                'name' => $value['student']['user']['name'],
-                'attendances' => $attendances,
-            ]);
-        }
-        return $newArray;
     }
 
     private function getAttendances($studentId, $studentAttendances)

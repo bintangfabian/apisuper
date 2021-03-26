@@ -14,9 +14,9 @@ class GuardianOfStudentSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('grades')->insert([
+        DB::table('guardian_of_students')->insert([
             [
-                'student_id' => 4,
+                'student_id' => 1,
                 'user_id' => 7,
                 'created_at' => now(),
                 'updated_at' => now(),
