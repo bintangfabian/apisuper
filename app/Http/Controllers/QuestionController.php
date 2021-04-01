@@ -20,7 +20,7 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        return Question::where('user_id', $user->id)->with(['essayAnswer', 'options'])->paginate(15);
+        return Question::where('user_id', $user->id)->with(['essayAnswer', 'options', 'subject', 'grade'])->paginate(15);
     }
 
     /**
@@ -58,11 +58,11 @@ class QuestionController extends Controller
     public function show($id)
     {
         try {
-            $question = Question::findOrFail($id);
+            $question = Question::with(['essayAnswer', 'options', 'subject', 'grade'])->findOrFail($id);
         } catch (\Throwable $th) {
             return response()->error('Pengumuman tidak ditemukan!', StatusCode::UNPROCESSABLE_ENTITY);
         }
-        return $question->with(['essayAnswer', 'options'])->get();
+        return $question;
     }
 
     /**

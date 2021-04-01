@@ -25,9 +25,18 @@ class Question extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
 
     public function exams()
     {
         return $this->belongsToMany(Exam::class);
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class);
     }
 }

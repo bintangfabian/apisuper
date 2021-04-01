@@ -29,7 +29,7 @@ class UpdateQuestion extends FormRequest
             'subject_id' => 'string|required|exists:subjects,id',
             'grade_id' => 'string|required|exists:grades,id',
             'essay_answer' => 'string|required_if:type,Essay',
-            'options' => 'array|required_if:type,Multiple Choice|min:4',
+            'options' => 'array|required_if:type,Multiple Choice',
             'options.*.name' => 'string|required|in:a,b,c,d',
             'options.*.content' => 'string|required',
             'options.*.is_true' => 'boolean|required',
